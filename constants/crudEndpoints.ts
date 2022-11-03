@@ -4,6 +4,16 @@ import prisma from "lib/glue/prisma"
 // because importing appConfig will always import prisma client
 // and could slow down SSR
 
-const crudEndpoints = {}
+const crudEndpoints = {
+  source: {
+    model: prisma.source,
+  },
+  idea: {
+    model: prisma.idea,
+  },
+  record: {
+    model: prisma.record,
+  },
+}
 
 export default crudEndpoints
