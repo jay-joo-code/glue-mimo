@@ -49,8 +49,10 @@ model User {
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
   accounts      Account[]
   sessions      Session[]
-
-  tasks Task[]
+  Vault         Vault[]
+  Source        Source[]
+  Idea          Idea[]
+  Record        Record[]
 
   @@map(name: "users")
 }
@@ -64,15 +66,50 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-model Task {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
-  userId      Int?     @map("user_id")
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  isValidated Boolean  @default(false)
+model Vault {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  name String? @default("")
+  name String? @default("Untitled vault")
+}
 
-  @@map(name: "tasks")
+model Source {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name   String?  @default("")
+  Record Record[]
+}
+
+model Idea {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name   String?  @default("")
+  Record Record[]
+}
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content String? @default("")
+
+  sourceId Int?    @map("source_id")
+  source   Source? @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  ideaId Int?  @map("idea_id")
+  idea   Idea? @relation(fields: [ideaId], references: [id], onDelete: Cascade)
 }
