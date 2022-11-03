@@ -1,13 +1,13 @@
 import useGlueQuery, { IGlueQueryConfig } from "hooks/glue/useGlueQuery"
 
-export interface IUseEntitiesArgs {
+export interface IUseSourcesArgs {
   userId: number
 }
 
-export const queryConfigEntities = ({
+export const queryConfigSources = ({
   userId,
-}: IUseEntitiesArgs): IGlueQueryConfig => ({
-  url: "/glue/entity",
+}: IUseSourcesArgs): IGlueQueryConfig => ({
+  url: "/glue/source",
   args: {
     where: {
       userId,
@@ -18,12 +18,12 @@ export const queryConfigEntities = ({
   },
 })
 
-const useEntities = ({ userId }: IUseEntitiesArgs) => {
+const useSources = ({ userId }: IUseSourcesArgs) => {
   return useGlueQuery(
-    queryConfigEntities({
+    queryConfigSources({
       userId,
     })
   )
 }
 
-export default useEntities
+export default useSources
