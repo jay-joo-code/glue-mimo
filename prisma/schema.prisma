@@ -50,9 +50,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Vault         Vault[]
-  Source        Source[]
-  Idea          Idea[]
   Record        Record[]
+  Entity        Entity[]
 
   @@map(name: "users")
 }
@@ -76,26 +75,16 @@ model Vault {
   name String? @default("Untitled vault")
 }
 
-model Source {
+model Entity {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
   userId    Int?     @map("user_id")
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  name   String?  @default("")
-  Record Record[]
-}
-
-model Idea {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  userId    Int?     @map("user_id")
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  name   String?  @default("")
-  Record Record[]
+  name    String?  @default("")
+  variant String // "source" | "idea"
+  Record  Record[]
 }
 
 model Record {
@@ -107,9 +96,6 @@ model Record {
 
   content String? @default("")
 
-  sourceId Int?    @map("source_id")
-  source   Source? @relation(fields: [sourceId], references: [id], onDelete: Cascade)
-
-  ideaId Int?  @map("idea_id")
-  idea   Idea? @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  entityId Int?    @map("entity_id")
+  entity   Entity? @relation(fields: [entityId], references: [id], onDelete: Cascade)
 }

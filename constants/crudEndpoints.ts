@@ -5,11 +5,8 @@ import prisma from "lib/glue/prisma"
 // and could slow down SSR
 
 const crudEndpoints = {
-  source: {
-    model: prisma.source,
-  },
-  idea: {
-    model: prisma.idea,
+  entity: {
+    model: prisma.entity,
   },
   record: {
     model: prisma.record,
