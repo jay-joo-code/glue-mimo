@@ -1,19 +1,24 @@
 import { Stack } from "@mantine/core"
+import Button from "components/glue/Button"
+import Container from "components/glue/Container"
 import useRecords from "hooks/queries/useRecords"
 import api from "lib/glue/api"
 import React, { useEffect } from "react"
+import { IEntityVariant } from "types"
 import RecordItem from "./RecordItem"
 
 interface IRecordListProps {
-  sourceId: number
+  displayVariant: IEntityVariant
+  sourceId?: number
+  ideaId?: number
 }
 
-const RecordList = ({ sourceId }: IRecordListProps) => {
+const RecordList = ({ sourceId, ideaId, displayVariant }: IRecordListProps) => {
   const { data: records, refetch: refetchRecords } = useRecords({
     sourceId,
   })
 
-  const createFirstRecord = async () => {
+  const createRecord = async () => {
     await api.post("/glue/record", {
       sourceId,
     })
@@ -22,7 +27,7 @@ const RecordList = ({ sourceId }: IRecordListProps) => {
 
   useEffect(() => {
     if (records?.length === 0) {
-      createFirstRecord()
+      createRecord()
     }
   }, [records])
 
@@ -31,6 +36,9 @@ const RecordList = ({ sourceId }: IRecordListProps) => {
       {records?.map((record) => (
         <RecordItem key={record?.id} record={record} />
       ))}
+      <Container>
+        <Button onClick={createRecord}>Add record</Button>
+      </Container>
     </Stack>
   )
 }

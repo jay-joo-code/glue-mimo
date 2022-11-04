@@ -14,6 +14,10 @@ export const queryConfigRecords = ({
     },
     include: {
       source: true,
+      idea: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   },
 })

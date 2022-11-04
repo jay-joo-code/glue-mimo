@@ -1,3 +1,4 @@
+import { Space } from "@mantine/core"
 import EntityList from "components/entity/EntityList"
 import RecordList from "components/entity/RecordList"
 import Container from "components/glue/Container"
@@ -9,6 +10,7 @@ import useSources from "hooks/queries/useSources"
 import api from "lib/glue/api"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
+import { IEntityVariant } from "types"
 
 const SourceDetailsPage = () => {
   const router = useRouter()
@@ -19,6 +21,7 @@ const SourceDetailsPage = () => {
   const { refetch: refetchSources } = useSources({
     userId: session?.user?.id,
   })
+  const entityVariant = router?.query?.entityVariant
 
   const handleNameChange = (event) => {
     updateSource("update", {
@@ -28,14 +31,12 @@ const SourceDetailsPage = () => {
 
   const handleSaveName = async (value) => {
     if (source?.id) {
-      const variant = router?.query?.entityVariant
-
-      if (variant === "source") {
+      if (entityVariant === "source") {
         await api.put(`/glue/source/${source?.id}`, {
           name: value,
         })
         refetchSources()
-      } else if (variant === "idea") {
+      } else if (entityVariant === "idea") {
         // TODO:
       }
     }
@@ -64,7 +65,11 @@ const SourceDetailsPage = () => {
               },
             })}
           />
-          <RecordList sourceId={source?.id} />
+          <Space mb="sm" />
+          <RecordList
+            sourceId={source?.id}
+            displayVariant={entityVariant as IEntityVariant}
+          />
         </Container>
       </Flex>
     </PageContainer>
