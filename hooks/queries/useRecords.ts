@@ -17,7 +17,7 @@ export const queryConfigRecords = ({
       idea: true,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: "asc",
     },
   },
 })
