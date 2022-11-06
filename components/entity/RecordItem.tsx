@@ -34,10 +34,10 @@ const RecordItem = ({ record }: IRecordItemProps) => {
 
   return (
     <Container>
-      <Input variant="subtle" value={record?.idea?.name} />
-      <Space mb=".2rem" />
+      {/* <Input variant="subtle" value={record?.idea?.name} /> */}
       <Textarea
         variant="subtle"
+        size="md"
         value={recordData?.content}
         minRows={2}
         autosize={true}

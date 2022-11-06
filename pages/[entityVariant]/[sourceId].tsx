@@ -5,6 +5,7 @@ import Container from "components/glue/Container"
 import Flex from "components/glue/Flex"
 import Input from "components/glue/Input"
 import PageContainer from "components/glue/PageContainer"
+import Textarea from "components/glue/Textarea"
 import useSource from "hooks/queries/useSource"
 import useSources from "hooks/queries/useSources"
 import api from "lib/glue/api"
@@ -51,17 +52,20 @@ const SourceDetailsPage = () => {
             flexGrow: 2,
           })}
         >
-          <Input
+          <Textarea
             size="xl"
             variant="subtle"
             value={source?.name}
             onChange={handleNameChange}
             placeholder="Untitled"
             onDebouncedChange={handleSaveName}
+            autosize={true}
+            minRows={1}
             sx={(theme) => ({
-              input: {
+              textarea: {
                 fontWeight: 600,
                 width: "100%",
+                fontSize: "2.2rem",
               },
             })}
           />

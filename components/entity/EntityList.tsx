@@ -19,9 +19,15 @@ const EntityList = () => {
 
   return (
     <Container
+      px="xs"
+      py="md"
       sx={(theme) => ({
         width: "100%",
         flexShrink: 0,
+        border: `2px solid ${theme.colors.gray[2]}`,
+        borderRadius: theme.radius.md,
+        height: "80vh",
+        overflow: "overlay",
 
         [`@media (min-width: ${theme.breakpoints.xs}px)`]: {
           maxWidth: "300px",

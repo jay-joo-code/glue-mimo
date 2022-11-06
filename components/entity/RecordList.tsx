@@ -32,7 +32,7 @@ const RecordList = ({ sourceId, ideaId, displayVariant }: IRecordListProps) => {
   }, [records])
 
   return (
-    <Stack>
+    <Stack spacing="xs">
       {records?.map((record) => (
         <RecordItem key={record?.id} record={record} />
       ))}
