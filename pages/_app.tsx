@@ -13,6 +13,7 @@ import { ThemeProvider } from "styled-components"
 import * as amplitude from "@amplitude/analytics-browser"
 import "styles/glue/reset.css"
 import { GlueRouterTransition } from "components/glue/GlueRouterTransition"
+import KeyListener from "components/KeyListener"
 
 const App = ({ Component, pageProps }: AppProps) => {
   // NOTE: uncomment to persist scroll position on route change
@@ -38,6 +39,7 @@ const App = ({ Component, pageProps }: AppProps) => {
               <SWRProvider>
                 <AppShell>
                   <AppDefaultHead />
+                  <KeyListener />
                   <Component {...pageProps} />
                 </AppShell>
               </SWRProvider>
