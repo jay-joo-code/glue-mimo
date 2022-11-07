@@ -48,7 +48,14 @@ const SourceItem = ({ entity, variant }: ISourceItemProps) => {
             borderRadius: theme.radius.md,
           })}
         >
-          <Text weight={500}>{entity?.name || `Untitled ${variant}`}</Text>
+          <Text
+            weight={500}
+            sx={(theme) => ({
+              lineHeight: 1.5,
+            })}
+          >
+            {entity?.name || `Untitled ${variant}`}
+          </Text>
           <Space mb="xs" />
           <Flex justify="space-between" noWrap={true}>
             <Text size="xs" lineClamp={1} color="dimmed">

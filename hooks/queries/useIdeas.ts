@@ -18,7 +18,11 @@ export const queryConfigIdeas = ({
       updatedAt: "desc",
     },
     include: {
-      records: true,
+      records: {
+        orderBy: {
+          updatedAt: "desc",
+        },
+      },
     },
   },
   disabled,
