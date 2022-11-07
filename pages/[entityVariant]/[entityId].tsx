@@ -81,6 +81,7 @@ const SourceDetailsPage = () => {
       <Flex align="flex-start">
         <EntityList />
         <Container
+          mt="-1.2rem"
           sx={(theme) => ({
             flexGrow: 2,
           })}
