@@ -1,4 +1,5 @@
-import { Stack } from "@mantine/core"
+import { Space, Stack } from "@mantine/core"
+import Container from "components/glue/Container"
 import Textarea from "components/glue/Textarea"
 import useKeyFocusRef from "hooks/glue/useKeyFocusRef"
 import useRecords from "hooks/queries/useRecords"
@@ -33,15 +34,17 @@ const RecordList = ({ sourceId, ideaId, displayVariant }: IRecordListProps) => {
   const [tempValue, setTempValue] = useState<string>("")
 
   return (
-    <Stack spacing="xs">
-      {records?.map((record) => (
-        <RecordItem
-          key={record?.id}
-          record={record}
-          keyFocusInputRef={keyFocusInputRef}
-        />
-      ))}
-
+    <Container>
+      <Stack spacing={0}>
+        {records?.map((record) => (
+          <RecordItem
+            key={record?.id}
+            recordInfo={record}
+            keyFocusInputRef={keyFocusInputRef}
+          />
+        ))}
+      </Stack>
+      <Space mb="sm" />
       {/* textarea adder */}
       <Textarea
         ref={keyFocusInputRef}
@@ -52,7 +55,7 @@ const RecordList = ({ sourceId, ideaId, displayVariant }: IRecordListProps) => {
         onChange={(event) => setTempValue(event?.target?.value)}
         onDebouncedChange={appendRecord}
       />
-    </Stack>
+    </Container>
   )
 }
 

@@ -44,7 +44,11 @@ const SourceDetailsPage = () => {
   }
 
   return (
-    <PageContainer variant="responsive" title={`${source?.name || "Untitled"}`}>
+    <PageContainer
+      variant="responsive"
+      title={`${source?.name || "Untitled"}`}
+      isPrivate={true}
+    >
       <Flex align="flex-start">
         <EntityList />
         <Container

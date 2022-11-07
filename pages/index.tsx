@@ -3,7 +3,7 @@ import PageContainer from "components/glue/PageContainer"
 
 const Index = () => {
   return (
-    <PageContainer variant="responsive" title="Dashboard">
+    <PageContainer variant="responsive" title="Dashboard" isPrivate={true}>
       <EntityList />
     </PageContainer>
   )

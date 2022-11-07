@@ -8,7 +8,12 @@ export const queryConfigRecord = ({
   recordId,
 }: IUseRecordArgs): IGlueQueryConfig => ({
   url: `/glue/record/${recordId}`,
-  args: {},
+  args: {
+    include: {
+      idea: true,
+      source: true,
+    },
+  },
 })
 
 const useRecord = ({ recordId }: IUseRecordArgs) => {
