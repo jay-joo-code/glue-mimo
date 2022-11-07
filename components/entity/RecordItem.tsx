@@ -114,13 +114,13 @@ const RecordItem = ({ recordInfo, keyFocusInputRef }: IRecordItemProps) => {
 
   return (
     <Container>
-      <Flex pl=".3rem" align="flex-end" spacing={0}>
-        <Text size="sm" weight={600} color="gray">
+      <Flex pl=".3rem" align="center" spacing={0}>
+        <Text size="sm" weight={600} color="gray" mt=".6rem">
           #
         </Text>
         <Select
           variant="unstyled"
-          size="xs"
+          size="md"
           data={[...createIdeaOption, ...ideaOptions]}
           searchable={true}
           onSearchChange={setSearchValue}
@@ -130,7 +130,7 @@ const RecordItem = ({ recordInfo, keyFocusInputRef }: IRecordItemProps) => {
           onChange={handleIdeaChange}
           sx={(theme) => ({
             flexGrow: 2,
-            height: "24px",
+            height: "34px",
             input: {
               color: theme.colors.brand,
               paddingLeft: ".2rem",

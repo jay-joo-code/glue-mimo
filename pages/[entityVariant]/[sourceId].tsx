@@ -73,7 +73,6 @@ const SourceDetailsPage = () => {
               },
             })}
           />
-          <Space mb="sm" />
           <RecordList
             sourceId={source?.id}
             displayVariant={entityVariant as IEntityVariant}
