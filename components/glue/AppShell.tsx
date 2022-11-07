@@ -23,6 +23,7 @@ const AppShell = ({ children }: IAppShellProps) => {
           [`@media (min-width: ${theme.breakpoints.md}px)`]: {
             width: theme.breakpoints.md,
             maxWidth: "unset",
+            minHeight: "85vh",
           },
         })}
       >

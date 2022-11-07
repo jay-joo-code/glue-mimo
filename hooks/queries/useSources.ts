@@ -17,6 +17,13 @@ export const queryConfigSources = ({
     orderBy: {
       updatedAt: "desc",
     },
+    include: {
+      records: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+    },
   },
   disabled,
 })

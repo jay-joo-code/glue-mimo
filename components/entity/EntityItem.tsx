@@ -1,17 +1,20 @@
 import { Badge, Space, Text, useMantineTheme } from "@mantine/core"
-import { Idea, Source } from "@prisma/client"
+import { Idea, Record, Source } from "@prisma/client"
 import Container from "components/glue/Container"
 import Flex from "components/glue/Flex"
 import IconButton from "components/glue/IconButton"
 import Link from "next/link"
 import React from "react"
+import dateFromNow from "util/glue/dateFromNow"
 import DeleteIcon from "@mui/icons-material/Delete"
 import api from "lib/glue/api"
 import useSources from "hooks/queries/useSources"
 import { useSession } from "next-auth/react"
 
 interface ISourceItemProps {
-  entity: Source | Idea
+  entity: (Source | Idea) & {
+    records: Record[]
+  }
   variant: "source" | "idea"
 }
 
@@ -30,42 +33,43 @@ const SourceItem = ({ entity, variant }: ISourceItemProps) => {
   }
 
   return (
-    <Link href={`/${variant}/${entity?.id}`}>
-      <Container
-        isClickable={true}
-        clickableHoverColor={theme?.colors?.gray[1]}
-        glueKey={`${entity}-${entity?.id}`}
-        p="xs"
-        sx={(theme) => ({
-          borderRadius: theme.radius.md,
-          background: theme.colors.gray[0],
-        })}
-      >
-        <Text weight={500}>{entity?.name || `Untitled ${variant}`}</Text>
-        <Space mb="xs" />
-        <Flex justify="space-between">
-          <Flex align="center">
-            <Badge
-              radius="xs"
-              ml="-4px"
-              size="sm"
-              color={variant === "source" ? "indigo" : "green"}
-            >
-              {variant}
-            </Badge>
+    <Container
+      sx={(theme) => ({
+        borderBottom: `1px solid ${theme.colors.gray[1]}`,
+      })}
+    >
+      <Link href={`/${variant}/${entity?.id}`}>
+        <Container
+          isClickable={true}
+          glueKey={`${entity}-${entity?.id}`}
+          px="xs"
+          py="sm"
+          sx={(theme) => ({
+            borderRadius: theme.radius.md,
+          })}
+        >
+          <Text weight={500}>{entity?.name || `Untitled ${variant}`}</Text>
+          <Space mb="xs" />
+          <Flex justify="space-between" noWrap={true}>
+            <Text size="xs" lineClamp={1} color="dimmed">
+              {dateFromNow(new Date(entity?.updatedAt))}
+              {entity?.records?.length > 0
+                ? ` • ${entity?.records[0]?.content}`
+                : ""}
+            </Text>
+            {/* <Flex align="center">
+              <IconButton color="button-gray" size="xs" onClick={handleDelete}>
+                <DeleteIcon
+                  sx={(theme) => ({
+                    width: "16px",
+                  })}
+                />
+              </IconButton>
+            </Flex> */}
           </Flex>
-          <Flex align="center">
-            <IconButton color="pink" size="xs" onClick={handleDelete}>
-              <DeleteIcon
-                sx={(theme) => ({
-                  width: "16px",
-                })}
-              />
-            </IconButton>
-          </Flex>
-        </Flex>
-      </Container>
-    </Link>
+        </Container>
+      </Link>
+    </Container>
   )
 }
 

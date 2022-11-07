@@ -14,6 +14,12 @@ export const queryConfigIdeas = ({
     where: {
       userId,
     },
+    orderBy: {
+      updatedAt: "desc",
+    },
+    include: {
+      records: true,
+    },
   },
   disabled,
 })
