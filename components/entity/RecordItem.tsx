@@ -1,5 +1,6 @@
-import { Select } from "@mantine/core"
+import { Badge, Select } from "@mantine/core"
 import { Idea, Record, Source } from "@prisma/client"
+import Button from "components/glue/Button"
 import Container from "components/glue/Container"
 import Flex from "components/glue/Flex"
 import Text from "components/glue/Text"
@@ -9,7 +10,9 @@ import useRecord from "hooks/queries/useRecord"
 import useRecords from "hooks/queries/useRecords"
 import api from "lib/glue/api"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 import { useState } from "react"
+import { IEntityVariant } from "types"
 
 interface IRecordItemProps {
   recordInfo: Record & {
@@ -17,17 +20,27 @@ interface IRecordItemProps {
     idea: Idea
   }
   keyFocusInputRef: any
+  entityId: number
+  entityVariant: IEntityVariant
 }
 
-const RecordItem = ({ recordInfo, keyFocusInputRef }: IRecordItemProps) => {
+const RecordItem = ({
+  recordInfo,
+  keyFocusInputRef,
+  entityId,
+  entityVariant,
+}: IRecordItemProps) => {
+  const [searchValue, setSearchValue] = useState<string>("")
+  const { data: session } = useSession()
   const { data: record, update: updateRecord } = useRecord({
     recordId: recordInfo?.id,
   })
   const { update: updateRecords } = useRecords({
-    sourceId: recordInfo?.source?.id,
+    entityId,
+    entityVariant,
   })
-  const [searchValue, setSearchValue] = useState<string>("")
-  const { data: session } = useSession()
+
+  // ideas
   const { data: ideas, update: updateIdeas } = useIdeas({
     userId: session?.user?.id,
   })
@@ -114,31 +127,47 @@ const RecordItem = ({ recordInfo, keyFocusInputRef }: IRecordItemProps) => {
 
   return (
     <Container>
-      <Flex pl=".3rem" align="center" spacing={0}>
-        <Text size="sm" weight={600} color="gray" mt=".6rem">
-          #
-        </Text>
-        <Select
-          variant="unstyled"
-          size="md"
-          data={[...createIdeaOption, ...ideaOptions]}
-          searchable={true}
-          onSearchChange={setSearchValue}
-          searchValue={searchValue}
-          nothingFound="No options"
-          value={String(record?.ideaId) || null}
-          onChange={handleIdeaChange}
-          sx={(theme) => ({
-            flexGrow: 2,
-            height: "34px",
-            input: {
-              color: theme.colors.brand,
-              paddingLeft: ".2rem",
-            },
-          })}
-          onBlur={handleBlur}
-        />
-      </Flex>
+      {entityVariant === "source" && (
+        <Flex align="center" spacing={0}>
+          <Link href={`/idea/${record?.ideaId}`}>
+            <Container isClickable={true} mt=".6rem" p=".3rem">
+              <Text size="sm" weight={700} color="gray">
+                #
+              </Text>
+            </Container>
+          </Link>
+
+          <Select
+            variant="unstyled"
+            size="md"
+            data={[...createIdeaOption, ...ideaOptions]}
+            searchable={true}
+            onSearchChange={setSearchValue}
+            searchValue={searchValue}
+            nothingFound="No options"
+            value={String(record?.ideaId) || null}
+            onChange={handleIdeaChange}
+            sx={(theme) => ({
+              flexGrow: 2,
+              height: "34px",
+              input: {
+                color: theme.colors.brand,
+                paddingLeft: ".2rem",
+              },
+            })}
+            onBlur={handleBlur}
+          />
+        </Flex>
+      )}
+      {entityVariant === "idea" && (
+        <Container mt="sm">
+          <Link href={`/source/${record?.sourceId}`}>
+            <Button radius="sm" variant="light" compact>
+              {recordInfo?.source?.name}
+            </Button>
+          </Link>
+        </Container>
+      )}
       <Container
         sx={(theme) => ({
           position: "relative",

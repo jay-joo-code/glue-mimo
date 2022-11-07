@@ -9,21 +9,29 @@ import { IEntityVariant } from "types"
 import RecordItem from "./RecordItem"
 
 interface IRecordListProps {
-  displayVariant: IEntityVariant
-  sourceId?: number
-  ideaId?: number
+  entityId: number
+  entityVariant: IEntityVariant
 }
 
-const RecordList = ({ sourceId, ideaId, displayVariant }: IRecordListProps) => {
+const RecordList = ({ entityId, entityVariant }: IRecordListProps) => {
   const { data: records, refetch: refetchRecords } = useRecords({
-    sourceId,
+    entityId,
+    entityVariant,
   })
-  const { keyFocusInputRef, focusAtIdx } = useKeyFocusRef()
+  const { keyFocusInputRef } = useKeyFocusRef()
 
   const appendRecord = async (value) => {
     if (value?.length > 0) {
+      const entityLinkData =
+        entityVariant === "source"
+          ? {
+              sourceId: entityId,
+            }
+          : {
+              ideaId: entityId,
+            }
       await api.post("/glue/record", {
-        sourceId,
+        ...entityLinkData,
         content: value,
       })
       setTempValue("")
@@ -41,20 +49,24 @@ const RecordList = ({ sourceId, ideaId, displayVariant }: IRecordListProps) => {
             key={record?.id}
             recordInfo={record}
             keyFocusInputRef={keyFocusInputRef}
+            entityId={entityId}
+            entityVariant={entityVariant}
           />
         ))}
       </Stack>
       <Space mb="sm" />
       {/* textarea adder */}
-      <Textarea
-        ref={keyFocusInputRef}
-        variant="subtle"
-        size="md"
-        minRows={1}
-        value={tempValue}
-        onChange={(event) => setTempValue(event?.target?.value)}
-        onDebouncedChange={appendRecord}
-      />
+      {entityVariant === "source" && (
+        <Textarea
+          ref={keyFocusInputRef}
+          variant="subtle"
+          size="md"
+          minRows={1}
+          value={tempValue}
+          onChange={(event) => setTempValue(event?.target?.value)}
+          onDebouncedChange={appendRecord}
+        />
+      )}
     </Container>
   )
 }

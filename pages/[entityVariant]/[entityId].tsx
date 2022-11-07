@@ -6,6 +6,8 @@ import Flex from "components/glue/Flex"
 import Input from "components/glue/Input"
 import PageContainer from "components/glue/PageContainer"
 import Textarea from "components/glue/Textarea"
+import useIdea from "hooks/queries/useIdea"
+import useIdeas from "hooks/queries/useIdeas"
 import useSource from "hooks/queries/useSource"
 import useSources from "hooks/queries/useSources"
 import api from "lib/glue/api"
@@ -15,38 +17,65 @@ import { IEntityVariant } from "types"
 
 const SourceDetailsPage = () => {
   const router = useRouter()
-  const { data: source, update: updateSource } = useSource({
-    sourceId: Number(router?.query?.sourceId),
-  })
+  const entityVariant = router?.query?.entityVariant as IEntityVariant
+  const entityId = Number(router?.query?.entityId)
   const { data: session } = useSession()
+
+  // fetch source
+  const { data: source, update: updateSource } = useSource({
+    sourceId: entityId,
+    disabled: entityVariant !== "source",
+  })
   const { refetch: refetchSources } = useSources({
     userId: session?.user?.id,
+    disabled: entityVariant !== "source",
   })
-  const entityVariant = router?.query?.entityVariant
+
+  // fetch idea
+  const { data: idea, update: updateIdea } = useIdea({
+    ideaId: entityId,
+    disabled: entityVariant !== "idea",
+  })
+  const { refetch: refetchIdeas } = useIdeas({
+    userId: session?.user?.id,
+    disabled: entityVariant !== "idea",
+  })
+
+  const entityName = {
+    source: source?.name,
+    idea: idea?.name,
+  }[entityVariant]
 
   const handleNameChange = (event) => {
-    updateSource("update", {
-      name: event?.target?.value,
-    })
+    if (entityVariant === "source") {
+      updateSource("update", {
+        name: event?.target?.value,
+      })
+    } else if (entityVariant === "idea") {
+      updateIdea("update", {
+        name: event?.target?.value,
+      })
+    }
   }
 
   const handleSaveName = async (value) => {
-    if (source?.id) {
-      if (entityVariant === "source") {
-        await api.put(`/glue/source/${source?.id}`, {
-          name: value,
-        })
-        refetchSources()
-      } else if (entityVariant === "idea") {
-        // TODO:
-      }
+    if (entityVariant === "source" && source?.id) {
+      await api.put(`/glue/source/${source?.id}`, {
+        name: value,
+      })
+      refetchSources()
+    } else if (entityVariant === "idea" && idea?.id) {
+      await api.put(`/glue/idea/${idea?.id}`, {
+        name: value,
+      })
+      refetchIdeas()
     }
   }
 
   return (
     <PageContainer
       variant="responsive"
-      title={`${source?.name || "Untitled"}`}
+      title={entityName || "Untitled"}
       isPrivate={true}
     >
       <Flex align="flex-start">
@@ -59,7 +88,7 @@ const SourceDetailsPage = () => {
           <Textarea
             size="xl"
             variant="subtle"
-            value={source?.name}
+            value={entityName}
             onChange={handleNameChange}
             placeholder="Untitled"
             onDebouncedChange={handleSaveName}
@@ -73,10 +102,7 @@ const SourceDetailsPage = () => {
               },
             })}
           />
-          <RecordList
-            sourceId={source?.id}
-            displayVariant={entityVariant as IEntityVariant}
-          />
+          <RecordList entityId={entityId} entityVariant={entityVariant} />
         </Container>
       </Flex>
     </PageContainer>

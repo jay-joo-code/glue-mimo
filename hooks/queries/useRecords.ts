@@ -1,31 +1,45 @@
+import { IEntityVariant } from "types"
 import useGlueQuery, { IGlueQueryConfig } from "hooks/glue/useGlueQuery"
 
 export interface IUseRecordsArgs {
-  sourceId: number
+  entityId: number
+  entityVariant: IEntityVariant
 }
 
 export const queryConfigRecords = ({
-  sourceId,
+  entityId,
+  entityVariant,
 }: IUseRecordsArgs): IGlueQueryConfig => ({
   url: "/glue/record",
   args: {
-    where: {
-      sourceId,
-    },
+    where:
+      entityVariant === "source"
+        ? {
+            sourceId: entityId,
+          }
+        : {
+            ideaId: entityId,
+          },
     include: {
       source: true,
       idea: true,
     },
-    orderBy: {
-      createdAt: "asc",
-    },
+    orderBy:
+      entityVariant === "source"
+        ? {
+            createdAt: "asc",
+          }
+        : {
+            updatedAt: "desc",
+          },
   },
 })
 
-const useRecords = ({ sourceId }: IUseRecordsArgs) => {
+const useRecords = ({ entityId, entityVariant }: IUseRecordsArgs) => {
   return useGlueQuery(
     queryConfigRecords({
-      sourceId,
+      entityId,
+      entityVariant,
     })
   )
 }
