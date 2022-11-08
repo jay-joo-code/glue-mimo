@@ -3,16 +3,38 @@ import useGlueQuery, { IGlueQueryConfig } from "hooks/glue/useGlueQuery"
 export interface IUseSourcesArgs {
   userId: number
   disabled?: boolean
+  searchQuery?: string
 }
 
 export const queryConfigSources = ({
   userId,
   disabled,
+  searchQuery,
 }: IUseSourcesArgs): IGlueQueryConfig => ({
   url: "/glue/source",
   args: {
     where: {
       userId,
+      ...(searchQuery?.length > 0 && {
+        OR: [
+          {
+            name: {
+              contains: searchQuery,
+              mode: "insensitive",
+            },
+          },
+          {
+            records: {
+              some: {
+                content: {
+                  contains: searchQuery,
+                  mode: "insensitive",
+                },
+              },
+            },
+          },
+        ],
+      }),
     },
     orderBy: {
       updatedAt: "desc",
@@ -28,11 +50,16 @@ export const queryConfigSources = ({
   disabled,
 })
 
-const useSources = ({ userId, disabled = false }: IUseSourcesArgs) => {
+const useSources = ({
+  userId,
+  disabled = false,
+  searchQuery = "",
+}: IUseSourcesArgs) => {
   return useGlueQuery(
     queryConfigSources({
       userId,
       disabled,
+      searchQuery,
     })
   )
 }

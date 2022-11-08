@@ -1,28 +1,35 @@
 import { Container, Space, Stack } from "@mantine/core"
+import AddIcon from "@mui/icons-material/Add"
+import SearchIcon from "@mui/icons-material/Search"
 import Button from "components/glue/Button"
 import Flex from "components/glue/Flex"
+import Input from "components/glue/Input"
+import useIdeas from "hooks/queries/useIdeas"
 import useSources from "hooks/queries/useSources"
 import api from "lib/glue/api"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/router"
 import { useState } from "react"
 import { IEntityVariant } from "types"
 import EntityItem from "./EntityItem"
-import AddIcon from "@mui/icons-material/Add"
-import useIdeas from "hooks/queries/useIdeas"
 
 const EntityList = () => {
   const { data: session } = useSession()
   const [entityVariant, setEntityVariant] = useState<IEntityVariant>("source")
   const sourceButtonVariant = entityVariant === "source" ? "filled" : "light"
   const ideaButtonVariant = entityVariant === "idea" ? "filled" : "light"
+  const router = useRouter()
   const { data: sources, refetch: refetchSources } = useSources({
     userId: session?.user?.id,
     disabled: entityVariant !== "source",
+    searchQuery: router?.query["entity-search"] as string,
   })
   const { data: ideas } = useIdeas({
     userId: session?.user?.id,
     disabled: entityVariant !== "idea",
+    searchQuery: router?.query["entity-search"] as string,
   })
+
   const handleCreateSource = async () => {
     await api.post("/glue/source")
     refetchSources()
@@ -41,6 +48,13 @@ const EntityList = () => {
         },
       })}
     >
+      <Input
+        radius="xl"
+        icon={<SearchIcon />}
+        sourceOfTruth="url-query"
+        glueKey="entity-search"
+      />
+      <Space mb="md" />
       <Flex align="center" justify="space-between">
         <Flex align="center" justify="space-between" spacing="xs">
           <Button

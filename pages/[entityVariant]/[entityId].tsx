@@ -78,7 +78,7 @@ const SourceDetailsPage = () => {
       title={entityName || "Untitled"}
       isPrivate={true}
     >
-      <Flex align="flex-start">
+      <Flex align="flex-start" noWrap={true}>
         <EntityList />
         <Container
           mt="-1.2rem"

@@ -1,15 +1,12 @@
-import { Badge, Space, Text, useMantineTheme } from "@mantine/core"
+import { Space, Text } from "@mantine/core"
 import { Idea, Record, Source } from "@prisma/client"
 import Container from "components/glue/Container"
 import Flex from "components/glue/Flex"
-import IconButton from "components/glue/IconButton"
-import Link from "next/link"
-import React from "react"
-import dateFromNow from "util/glue/dateFromNow"
-import DeleteIcon from "@mui/icons-material/Delete"
-import api from "lib/glue/api"
 import useSources from "hooks/queries/useSources"
+import api from "lib/glue/api"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
+import dateFromNow from "util/glue/dateFromNow"
 
 interface ISourceItemProps {
   entity: (Source | Idea) & {
@@ -19,7 +16,6 @@ interface ISourceItemProps {
 }
 
 const SourceItem = ({ entity, variant }: ISourceItemProps) => {
-  const theme = useMantineTheme()
   const { data: session } = useSession()
   const { update: updateSources } = useSources({ userId: session?.user?.id })
 
@@ -38,7 +34,7 @@ const SourceItem = ({ entity, variant }: ISourceItemProps) => {
         borderBottom: `1px solid ${theme.colors.gray[1]}`,
       })}
     >
-      <Link href={`/${variant}/${entity?.id}`}>
+      <Link href={`/${variant}/${entity?.id}${location?.search}`}>
         <Container
           isClickable={true}
           glueKey={`${entity}-${entity?.id}`}
@@ -64,15 +60,6 @@ const SourceItem = ({ entity, variant }: ISourceItemProps) => {
                 ? ` • ${entity?.records[0]?.content}`
                 : ""}
             </Text>
-            {/* <Flex align="center">
-              <IconButton color="button-gray" size="xs" onClick={handleDelete}>
-                <DeleteIcon
-                  sx={(theme) => ({
-                    width: "16px",
-                  })}
-                />
-              </IconButton>
-            </Flex> */}
           </Flex>
         </Container>
       </Link>

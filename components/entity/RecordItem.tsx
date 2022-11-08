@@ -183,6 +183,7 @@ const RecordItem = ({
           onChange={handleContentChange}
           onDebouncedChange={saveContent}
           onKeyDown={handleKeyDown}
+          isDivOnBlur={true}
         />
       </Container>
     </Container>
