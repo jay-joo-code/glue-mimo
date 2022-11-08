@@ -155,11 +155,11 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, ITextareaProps>(
           onClick={handleRenderTextarea}
           sx={(theme) => ({
             padding: ".3rem .22rem",
-            minHeight: "36px",
-            background:
-              propVariant === "subtle" &&
-              value?.length === 0 &&
-              theme.colors.gray[0],
+            minHeight: "37px",
+            ...(propVariant === "subtle" &&
+              value?.trim()?.length === 0 && {
+                background: theme.colors.gray[0],
+              }),
             borderRadius: theme.radius.sm,
           })}
         >
