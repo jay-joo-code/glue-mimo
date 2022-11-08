@@ -61,13 +61,17 @@ const RecordItem = ({
       api.put(`/glue/record/${recordInfo?.id}`, {
         content: value,
       })
+      updateRecords("update-item", {
+        id: recordInfo?.id,
+        content: value,
+      })
     }
   }
 
   const handleKeyDown = (event) => {
     switch (event?.key) {
       case "Backspace":
-        if (record?.content?.length === 0) {
+        if (record?.content?.trim()?.length === 0) {
           api.delete(`/glue/record/${recordInfo?.id}`)
           updateRecords("delete-item", {
             id: recordInfo?.id,

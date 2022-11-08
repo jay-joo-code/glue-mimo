@@ -1,10 +1,9 @@
 import { Space, Stack } from "@mantine/core"
 import Container from "components/glue/Container"
-import Textarea from "components/glue/Textarea"
 import useKeyFocusRef from "hooks/glue/useKeyFocusRef"
 import useRecords from "hooks/queries/useRecords"
 import api from "lib/glue/api"
-import { useState } from "react"
+import { useEffect } from "react"
 import { IEntityVariant } from "types"
 import RecordItem from "./RecordItem"
 
@@ -20,26 +19,24 @@ const RecordList = ({ entityId, entityVariant }: IRecordListProps) => {
   })
   const { keyFocusInputRef } = useKeyFocusRef()
 
-  const appendRecord = async (value) => {
-    if (value?.length > 0) {
-      const entityLinkData =
-        entityVariant === "source"
-          ? {
-              sourceId: entityId,
-            }
-          : {
-              ideaId: entityId,
-            }
-      await api.post("/glue/record", {
-        ...entityLinkData,
-        content: value,
-      })
-      setTempValue("")
-      refetchRecords()
+  useEffect(() => {
+    if (
+      entityVariant === "source" &&
+      records &&
+      (records?.length === 0 ||
+        records[records?.length - 1]?.content?.trim()?.length > 0)
+    ) {
+      appendRecord()
     }
-  }
+  }, [records])
 
-  const [tempValue, setTempValue] = useState<string>("")
+  const appendRecord = async () => {
+    await api.post("/glue/record", {
+      sourceId: entityId,
+      content: "",
+    })
+    refetchRecords()
+  }
 
   return (
     <Container>
@@ -55,18 +52,6 @@ const RecordList = ({ entityId, entityVariant }: IRecordListProps) => {
         ))}
       </Stack>
       <Space mb="sm" />
-      {/* textarea adder */}
-      {entityVariant === "source" && (
-        <Textarea
-          ref={keyFocusInputRef}
-          variant="subtle"
-          size="md"
-          minRows={1}
-          value={tempValue}
-          onChange={(event) => setTempValue(event?.target?.value)}
-          onDebouncedChange={appendRecord}
-        />
-      )}
     </Container>
   )
 }
