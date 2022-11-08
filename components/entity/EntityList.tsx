@@ -1,4 +1,5 @@
 import { Container, Space, Stack } from "@mantine/core"
+import { useHotkeys } from "@mantine/hooks"
 import AddIcon from "@mui/icons-material/Add"
 import SearchIcon from "@mui/icons-material/Search"
 import Button from "components/glue/Button"
@@ -9,7 +10,7 @@ import useSources from "hooks/queries/useSources"
 import api from "lib/glue/api"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { IEntityVariant } from "types"
 import EntityItem from "./EntityItem"
 
@@ -29,6 +30,11 @@ const EntityList = () => {
     disabled: entityVariant !== "idea",
     searchQuery: router?.query["entity-search"] as string,
   })
+  const searchInputRef = useRef(null)
+  const handleFocusSearchInput = () => {
+    searchInputRef?.current?.focus()
+  }
+  useHotkeys([["mod+k", handleFocusSearchInput]])
 
   const handleCreateSource = async () => {
     await api.post("/glue/source")
@@ -49,6 +55,7 @@ const EntityList = () => {
       })}
     >
       <Input
+        ref={searchInputRef}
         radius="xl"
         icon={<SearchIcon />}
         sourceOfTruth="url-query"
