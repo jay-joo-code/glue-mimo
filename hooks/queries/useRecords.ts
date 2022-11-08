@@ -33,6 +33,7 @@ export const queryConfigRecords = ({
             updatedAt: "desc",
           },
   },
+  disabled: !entityId,
 })
 
 const useRecords = ({ entityId, entityVariant }: IUseRecordsArgs) => {
