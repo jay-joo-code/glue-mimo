@@ -40,7 +40,7 @@ const RecordList = ({ entityId, entityVariant }: IRecordListProps) => {
 
   return (
     <Container>
-      <Stack spacing={0}>
+      <Stack spacing="md">
         {records?.map((record) => (
           <RecordItem
             key={record?.id}
