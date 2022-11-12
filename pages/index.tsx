@@ -1,12 +1,13 @@
-import EntityList from "components/entity/EntityList"
 import PageContainer from "components/glue/PageContainer"
+import NoteList from "components/note/NoteList"
+import React from "react"
 
-const Index = () => {
+const IndexPage = () => {
   return (
-    <PageContainer variant="responsive" title="Dashboard" isPrivate={true}>
-      <EntityList />
+    <PageContainer variant="mobile-only" title="Dashboard" isPrivate={true}>
+      <NoteList />
     </PageContainer>
   )
 }
 
-export default Index
+export default IndexPage

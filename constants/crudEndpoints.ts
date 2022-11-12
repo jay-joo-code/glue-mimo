@@ -14,6 +14,9 @@ const crudEndpoints = {
   record: {
     model: prisma.record,
   },
+  note: {
+    model: prisma.note,
+  },
 }
 
 export default crudEndpoints
