@@ -47,7 +47,7 @@ const NoteList = ({ variant }: INoteListProps) => {
 
   return (
     <Container>
-      {variant === "tomorrow" && (
+      {variant === "tomorrow" && notes?.length > 0 && (
         <Text
           weight={600}
           mt="3rem"
@@ -60,8 +60,13 @@ const NoteList = ({ variant }: INoteListProps) => {
         </Text>
       )}
       <Stack spacing={0}>
-        {notes?.map((note) => (
-          <NoteItem key={note?.id} note={note} listVariant={variant} />
+        {notes?.map((note, idx) => (
+          <NoteItem
+            key={note?.id}
+            note={note}
+            listVariant={variant}
+            isLast={idx === notes?.length - 1}
+          />
         ))}
       </Stack>
     </Container>

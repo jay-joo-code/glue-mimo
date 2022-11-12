@@ -17,9 +17,10 @@ import { INoteListVariant } from "types"
 interface INoteItemProps {
   note: Note
   listVariant: INoteListVariant
+  isLast?: boolean
 }
 
-const NoteItem = ({ note, listVariant }: INoteItemProps) => {
+const NoteItem = ({ note, listVariant, isLast = false }: INoteItemProps) => {
   const { update: updateNotes } = useNotes({
     variant: listVariant,
   })
@@ -97,7 +98,7 @@ const NoteItem = ({ note, listVariant }: INoteItemProps) => {
   }
 
   return (
-    <Container ref={ref}>
+    <Container ref={ref} mb="lg">
       <Textarea
         variant="unstyled"
         size="md"
@@ -108,6 +109,7 @@ const NoteItem = ({ note, listVariant }: INoteItemProps) => {
         onChange={handleContentChange}
         onDebouncedChange={handleDebouncedContentChange}
         onKeyDown={handleKeyDown}
+        autoFocus={listVariant === "today" && isLast}
       />
       <Flex
         align="center"

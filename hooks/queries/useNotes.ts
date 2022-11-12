@@ -28,8 +28,10 @@ export const queryConfigNotes = ({
       where: {
         userId,
         availFrom: {
-          gte: set(variantToDate[variant], {
-            hours: 4,
+          ...(variant === "tomorrow" && {
+            gte: set(variantToDate[variant], {
+              hours: 4,
+            }),
           }),
           lte: variantToDate[variant],
         },
