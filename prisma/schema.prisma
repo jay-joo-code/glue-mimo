@@ -53,6 +53,7 @@ model User {
   Record        Record[]
   Source        Source[]
   Idea          Idea[]
+  Note          Note[]
 
   @@map(name: "users")
 }
@@ -112,4 +113,17 @@ model Record {
 
   ideaId Int?  @map("idea_id")
   idea   Idea? @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content   String?   @default("")
+  source    String?   @default("")
+  spaceBy   String?   @default("daily")
+  availFrom DateTime?
 }
