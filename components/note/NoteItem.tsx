@@ -109,7 +109,7 @@ const NoteItem = ({ note, listVariant, isLast = false }: INoteItemProps) => {
         onChange={handleContentChange}
         onDebouncedChange={handleDebouncedContentChange}
         onKeyDown={handleKeyDown}
-        autoFocus={listVariant === "today" && isLast}
+        // autoFocus={listVariant === "today" && isLast}
       />
       <Flex
         align="center"
