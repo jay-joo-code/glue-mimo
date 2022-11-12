@@ -3,18 +3,26 @@ import { Note } from "@prisma/client"
 import Button from "components/glue/Button"
 import Container from "components/glue/Container"
 import Flex from "components/glue/Flex"
+import IconButton from "components/glue/IconButton"
 import Input from "components/glue/Input"
 import Textarea from "components/glue/Textarea"
 import useNotes from "hooks/queries/useNotes"
 import api from "lib/glue/api"
 import React from "react"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import { showNotification } from "@mantine/notifications"
+import spaceByToAvailFrom from "util/spaceByToAvailFrom"
+import { INoteListVariant } from "types"
 
 interface INoteItemProps {
   note: Note
+  listVariant: INoteListVariant
 }
 
-const NoteItem = ({ note }: INoteItemProps) => {
-  const { update: updateNotes } = useNotes({})
+const NoteItem = ({ note, listVariant }: INoteItemProps) => {
+  const { update: updateNotes } = useNotes({
+    variant: listVariant,
+  })
   const { ref, focused } = useFocusWithin()
 
   const handleContentChange = (event) => {
@@ -30,8 +38,21 @@ const NoteItem = ({ note }: INoteItemProps) => {
     })
   }
 
+  const nextSpaceBy = {
+    daily: "weekly",
+    weekly: "monthly",
+    monthly: "archived",
+    archived: "daily",
+  }
+
   const handleToggleSpaceBy = async () => {
-    console.log("toggle")
+    updateNotes("update-item", {
+      id: note?.id,
+      spaceBy: nextSpaceBy[note?.spaceBy],
+    })
+    api.put(`/glue/note/${note?.id}`, {
+      spaceBy: nextSpaceBy[note?.spaceBy],
+    })
   }
 
   const deleteNote = () => {
@@ -43,10 +64,6 @@ const NoteItem = ({ note }: INoteItemProps) => {
 
   const handleKeyDown = (event) => {
     switch (event?.key) {
-      case "Enter": {
-        handleToggleSpaceBy()
-        break
-      }
       case "Backspace": {
         if (note?.content?.trim()?.length === 0) {
           deleteNote()
@@ -69,6 +86,16 @@ const NoteItem = ({ note }: INoteItemProps) => {
     })
   }
 
+  const markComplete = () => {
+    api.put(`/glue/note/${note?.id}`, {
+      availFrom: spaceByToAvailFrom[note?.spaceBy],
+    })
+    showNotification({
+      color: "green",
+      message: "Marked complete!",
+    })
+  }
+
   return (
     <Container ref={ref}>
       <Textarea
@@ -84,32 +111,40 @@ const NoteItem = ({ note }: INoteItemProps) => {
       />
       <Flex
         align="center"
-        spacing="xs"
+        justify="space-between"
         sx={(theme) => ({
-          opacity: focused ? 1 : 0,
+          opacity: focused ? 1 : 0.4,
           transition: "opacity 200ms ease-in-out",
         })}
       >
-        <Button
-          compact={true}
-          color="gray"
-          size="xs"
-          onClick={handleToggleSpaceBy}
-          onKeyDown={handleKeyDown}
-        >
-          {note?.spaceBy}
-        </Button>
-        <Input
-          placeholder="Source"
-          variant="unstyled"
-          value={note?.source}
-          onChange={handleSourceChange}
-          onDebouncedChange={handleDebouncedSourceChange}
-          sx={(theme) => ({
-            flexGrow: 2,
-            padding: 0,
-          })}
-        />
+        <Flex align="center" spacing="xs">
+          <Button
+            compact={true}
+            color="gray"
+            size="xs"
+            onClick={handleToggleSpaceBy}
+          >
+            {note?.spaceBy}
+          </Button>
+          <Input
+            placeholder="Source"
+            variant="unstyled"
+            value={note?.source}
+            onChange={handleSourceChange}
+            onDebouncedChange={handleDebouncedSourceChange}
+            sx={(theme) => ({
+              flexGrow: 2,
+              padding: 0,
+            })}
+          />
+        </Flex>
+        <IconButton color="brand" size="sm" onClick={markComplete}>
+          <CheckCircleIcon
+            sx={(theme) => ({
+              width: "16px",
+            })}
+          />
+        </IconButton>
       </Flex>
     </Container>
   )

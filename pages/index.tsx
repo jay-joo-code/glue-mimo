@@ -5,7 +5,9 @@ import React from "react"
 const IndexPage = () => {
   return (
     <PageContainer variant="mobile-only" title="Dashboard" isPrivate={true}>
-      <NoteList />
+      <NoteList variant="today" />
+      <NoteList variant="tomorrow" />
+      {/* <NoteList variant="next-week" /> */}
     </PageContainer>
   )
 }

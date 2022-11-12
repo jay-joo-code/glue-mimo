@@ -1,32 +1,42 @@
 import { Stack } from "@mantine/core"
-import Button from "components/glue/Button"
 import Container from "components/glue/Container"
+import Text from "components/glue/Text"
+import { set } from "date-fns"
 import useNotes from "hooks/queries/useNotes"
 import api from "lib/glue/api"
-import { useSession } from "next-auth/react"
-import React, { useEffect } from "react"
+import { useEffect } from "react"
+import { INoteListVariant } from "types"
 import randomId from "util/glue/randomId"
 import NoteItem from "./NoteItem"
 
-interface INoteListProps {}
+interface INoteListProps {
+  variant: INoteListVariant
+}
 
-const NoteList = ({}: INoteListProps) => {
-  const { data: notes, update: updateNotes } = useNotes({})
+const NoteList = ({ variant }: INoteListProps) => {
+  const { data: notes, update: updateNotes } = useNotes({
+    variant,
+  })
 
   const appendEmptyNote = async () => {
     const id = randomId()
-    api.post("/glue/note", {
-      id,
-    })
-    updateNotes("append-end", {
+    const defaultNote = {
       id,
       content: "",
       spaceBy: "daily",
-    })
+      availFrom: set(new Date(), {
+        hours: 5,
+        minutes: 0,
+        seconds: 0,
+      }),
+    }
+    api.post("/glue/note", defaultNote)
+    updateNotes("append-end", defaultNote)
   }
 
   useEffect(() => {
     if (
+      variant === "today" &&
       notes &&
       (notes?.length === 0 ||
         notes[notes?.length - 1]?.content?.trim()?.length !== 0)
@@ -37,9 +47,21 @@ const NoteList = ({}: INoteListProps) => {
 
   return (
     <Container>
+      {variant === "tomorrow" && (
+        <Text
+          weight={600}
+          mt="3rem"
+          mb="lg"
+          sx={(theme) => ({
+            fontSize: "2.2rem",
+          })}
+        >
+          Upcoming
+        </Text>
+      )}
       <Stack spacing={0}>
         {notes?.map((note) => (
-          <NoteItem key={note?.id} note={note} />
+          <NoteItem key={note?.id} note={note} listVariant={variant} />
         ))}
       </Stack>
     </Container>
